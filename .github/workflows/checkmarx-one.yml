@@ -55,5 +55,5 @@ jobs:
         run: export projectlist=$(wc -c ./temp.txt)
       - id: step6
         name: View variable
-        run: echo "$projectlist"
+        run: echo $projectlist
         
