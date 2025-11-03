@@ -54,7 +54,7 @@ jobs:
         name: View file
         run: echo projectlist=$(stat -c %s ./temp.txt) >> "$GITHUB_OUTPUT"
       - id: step6
-        if: ${{ steps.step5.outputs.projectlist }}
+        if: ${{ steps.step5.outputs.projectlist }} > 20
         name: View variable
         run: echo ${{ steps.step5.outputs.projectlist }}
         
