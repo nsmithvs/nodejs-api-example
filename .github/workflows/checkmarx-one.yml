@@ -37,4 +37,4 @@ jobs:
     steps:
       # This step checks out a copy of your repository.
       - name: Test echo
-      - run: echo Hello World!!
+        run: echo Hello World!!
