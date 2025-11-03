@@ -49,10 +49,10 @@ jobs:
         run: ./cx version
       - id: step4
         name: Check for project
-        run: ./cx project list  --tenant  \
-                --base-uri  \
-                --base-auth-uri  \
-                --client-id  \
-                --client-secret  \
-                --format json \
+        run: ./cx project list  --tenant "${{ secrets.CX_TENANT }}" \
+                --base-uri  'https://ast.checkmarx.net' \
+                --base-auth-uri 'https://iam.checkmarx.net' \
+                --client-id  "${{ secrets.CX_CLIENT_ID }}" \
+                --client-secret "${{ secrets.CX_CLIENT_SECRET }}" \
+                --format json 
         
