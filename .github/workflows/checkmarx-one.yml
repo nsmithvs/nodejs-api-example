@@ -55,5 +55,5 @@ jobs:
         run: echo projectlist=$(stat -c %s ./temp.txt) >> "$GITHUB_OUTPUT"
       - id: step6
         name: View variable
-        run: echo projectexist=$({{ steps.step5.outputs.projectlist }} < 20)
+        run: echo projectexist=$(${{ steps.step5.outputs.projectlist }} < 20)
         
