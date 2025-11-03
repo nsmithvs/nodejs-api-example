@@ -50,7 +50,7 @@ jobs:
         run: ./cx version
       - id: step4
         name: Check for project
-        run: echo $(./cx project list  --tenant "${{ secrets.CX_TENANT }}" --base-uri  "https://ast.checkmarx.net" --base-auth-uri "https://iam.checkmarx.net" --client-id  "${{ secrets.CX_CLIENT_ID }}" --client-secret "${{ secrets.CX_CLIENT_SECRET }}" --format json | grep "nsmithvs/nodejs-api-example") > temp.txt
+        run: echo $(./cx project list  --tenant "${{ secrets.CX_TENANT }}" --base-uri  "https://ast.checkmarx.net" --base-auth-uri "https://iam.checkmarx.net" --client-id  "${{ secrets.CX_CLIENT_ID }}" --client-secret "${{ secrets.CX_CLIENT_SECRET }}" --format json | grep ${{ github.repository }}) > temp.txt
       - id: step5
         name: View file
         run: echo projectlist=$(stat -c %s ./temp.txt) >> "$GITHUB_OUTPUT"
