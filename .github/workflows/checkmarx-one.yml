@@ -55,5 +55,6 @@ jobs:
         run: echo projectlist=$(wc -c ./temp.txt)
       - id: step6
         name: View variable
-        run: echo $projectlist
+        if: $(wc -c ./temp.txt) > 20
+        run: echo "Hello"
         
