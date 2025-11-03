@@ -41,7 +41,7 @@ jobs:
     steps:
       # This step checks out a copy of your repository.
       - name: Test echo
-        run: echo Hello World!!
+        run: echo Hello ${{ github.repository }}!!
       - name: Download Archive file
         run: wget https://github.com/Checkmarx/ast-cli/releases/download/2.3.38/ast-cli_2.3.38_linux_x64.tar.gz
       - name: Unarchive file
