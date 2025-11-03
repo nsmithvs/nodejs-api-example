@@ -52,7 +52,7 @@ jobs:
         run: echo $(./cx project list  --tenant "${{ secrets.CX_TENANT }}" --base-uri  "https://ast.checkmarx.net" --base-auth-uri "https://iam.checkmarx.net" --client-id  "${{ secrets.CX_CLIENT_ID }}" --client-secret "${{ secrets.CX_CLIENT_SECRET }}" --format json | grep "nsmit222hvs/nodejs-api-example") > temp.txt
       - id: step5
         name: View file
-        run: echo projectlist=$(wc -c ./temp.txt) >> "$GITHUB_OUTPUT"
+        run: echo projectlist=$(stat -c %s ./temp.txt) >> "$GITHUB_OUTPUT"
       - id: step6
         if: ${{ steps.step5.outputs.projectlist }}
         name: View variable
