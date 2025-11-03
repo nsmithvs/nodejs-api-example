@@ -52,6 +52,5 @@ jobs:
         run: echo $(./cx project list  --tenant "${{ secrets.CX_TENANT }}" --base-uri  "https://ast.checkmarx.net" --base-auth-uri "https://iam.checkmarx.net" --client-id  "${{ secrets.CX_CLIENT_ID }}" --client-secret "${{ secrets.CX_CLIENT_SECRET }}" --format json | grep "nsmithjhkvs/nodejs-api-example") > temp.txt
       - id: step5
         name: View file
-        if: stat -c %s temp.txt > 20
-        run: cat ./temp.txt
+        run: wc -c ./temp.txt 
         
