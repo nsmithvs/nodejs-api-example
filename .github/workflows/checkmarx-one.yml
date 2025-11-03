@@ -35,6 +35,7 @@ jobs:
 
     outputs:
       projectlist: ${{ steps.step5.outputs.projectlist }}
+      projectexist: ${{ steps.step6.outputs.projectexist }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -55,5 +56,7 @@ jobs:
         run: echo projectlist=$(stat -c %s ./temp.txt) >> "$GITHUB_OUTPUT"
       - id: step6
         name: View variable
-        run: echo projectexist=${{ steps.step5.outputs.projectlist }}<20
+        run: echo projectexist=$(${{ steps.step5.outputs.projectlist }} < 20) >> "$GITHUB_OUTPUT"
+      - name: View variable2
+        run: echo ${{ steps.step6.outputs.projectexist }}
         
