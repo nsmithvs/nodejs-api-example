@@ -57,6 +57,8 @@ jobs:
       - id: step6
         name: View variable
         run: echo projectexist=$(expr ${{ steps.step5.outputs.projectlist }} - 1 ) >> "$GITHUB_OUTPUT"
-      - name: View variable2
+      - name: Create the Project if it does not exist
         if: ${{ steps.step6.outputs.projectexist == 0 }}
-        run: ./cx project create --tenant "${{ secrets.CX_TENANT }}" --base-uri  "https://ast.checkmarx.net" --base-auth-uri "https://iam.checkmarx.net" --client-id  "${{ secrets.CX_CLIENT_ID }}" --client-secret "${{ secrets.CX_CLIENT_SECRET }}" --tags "AdoreMe_Github_scan,adoreme" --project-name ${{ github.repository }}         
+        run: ./cx project create --tenant "${{ secrets.CX_TENANT }}" --base-uri  "https://ast.checkmarx.net" --base-auth-uri "https://iam.checkmarx.net" --client-id  "${{ secrets.CX_CLIENT_ID }}" --client-secret "${{ secrets.CX_CLIENT_SECRET }}" --tags "AdoreMe_Github_scan,adoreme" --project-name ${{ github.repository }}
+      - name: Run SAST Scan
+        run: ./cx scan create -s .  --tenant "${{ secrets.CX_TENANT }}" --base-uri  "https://ast.checkmarx.net" --base-auth-uri "https://iam.checkmarx.net" --client-id  "${{ secrets.CX_CLIENT_ID }}" --client-secret "${{ secrets.CX_CLIENT_SECRET }}" --tags "AdoreMe_Github_scan,adoreme" --output-path . --project-groups "AdoreMe_Group" --project-name ${{ github.repository }} --report-format sarif 
