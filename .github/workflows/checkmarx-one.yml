@@ -49,5 +49,10 @@ jobs:
         run: ./cx version
       - id: step4
         name: Check for project
-        run: ./cx project list
+        run: ./cx project list  --tenant  \
+                --base-uri  \
+                --base-auth-uri  \
+                --client-id  \
+                --client-secret  \
+                --format json \
         
