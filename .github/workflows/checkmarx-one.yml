@@ -43,4 +43,4 @@ jobs:
       - name: Unarchive file
         run: tar -xzvf ast-cli_2.3.38_linux_x64.tar.gz
       - name: Check version
-        run: cx --version
+        run: ./cx --version
