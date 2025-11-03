@@ -53,4 +53,7 @@ jobs:
       - id: step5
         name: View file
         run: export projectlist=$(wc -c ./temp.txt)
+      - id: step6
+        name: View variable
+        run: echo "${{jobs.ouputs.projectlist}}"
         
