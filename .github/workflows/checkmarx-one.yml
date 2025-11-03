@@ -54,6 +54,7 @@ jobs:
         name: View file
         run: echo projectlist=$(wc -c ./temp.txt) >> "$GITHUB_OUTPUT"
       - id: step6
+        if: ${{ steps.step5.outputs.projectlist }}
         name: View variable
         run: echo ${{ steps.step5.outputs.projectlist }}
         
