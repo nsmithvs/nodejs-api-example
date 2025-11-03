@@ -49,7 +49,7 @@ jobs:
         run: ./cx version
       - id: step4
         name: Check for project
-        run: ./cx project list  --tenant "${{ secrets.CX_TENANT }}" --base-uri  "https://ast.checkmarx.net" --base-auth-uri "https://iam.checkmarx.net" --client-id  "${{ secrets.CX_CLIENT_ID }}" --client-secret "${{ secrets.CX_CLIENT_SECRET }}" --format json | grep "nsmithvs/nodejs-api-example" >> temp.txt
+        run: ./cx project list  --tenant "${{ secrets.CX_TENANT }}" --base-uri  "https://ast.checkmarx.net" --base-auth-uri "https://iam.checkmarx.net" --client-id  "${{ secrets.CX_CLIENT_ID }}" --client-secret "${{ secrets.CX_CLIENT_SECRET }}" --format json | grep "nsm88ithvs/nodejs-api-example" >> temp.txt
       - id: step5
         name: View file
         run: cat ./temp.txt
