@@ -51,5 +51,5 @@ jobs:
         name: Check for project
         run: echo '''projectlist=$(./cx project list)''' >> "$GITHUB_OUTPUT"
       - name: Output results
-        run: echo '${{ steps.step4.outputs.output1 }}'
+        run: echo '${{ outputs.output1 }}'
         
