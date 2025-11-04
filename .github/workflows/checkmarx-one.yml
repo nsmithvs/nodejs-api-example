@@ -62,6 +62,8 @@ jobs:
         run: ./cx project create --tenant "${{ secrets.CX_TENANT }}" --base-uri  "https://ast.checkmarx.net" --base-auth-uri "https://iam.checkmarx.net" --client-id  "${{ secrets.CX_CLIENT_ID }}" --client-secret "${{ secrets.CX_CLIENT_SECRET }}" --tags "AdoreMe_Github_scan,adoreme" --project-name ${{ github.repository }}
       - name: Run SAST Scan
         run: ./cx scan create -s .  --tenant "${{ secrets.CX_TENANT }}" --base-uri  "https://ast.checkmarx.net" --base-auth-uri "https://iam.checkmarx.net" --client-id  "${{ secrets.CX_CLIENT_ID }}" --client-secret "${{ secrets.CX_CLIENT_SECRET }}" --tags "AdoreMe_Github_scan,adoreme" --output-path . --project-groups "AdoreMe_Group" --project-name ${{ github.repository }} --branch ${{ github.ref_name }} --report-format sarif 
+      - name: View Results
+        run: cat ./cx_result.sarif
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v3
         with:
