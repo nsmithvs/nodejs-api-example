@@ -11,13 +11,12 @@
 # This is a basic workflow to help you get started with Using Checkmarx One Action,
 # documentation can be found here : https://checkmarx.com/resource/documents/en/34965-68702-checkmarx-one-github-actions.html
 
-name: Checkmarx Scan
+name: Checkmarx Scan CLI
 
 # Controls when the workflow will run
 on:
   pull_request:
     types: [opened, reopened, synchronize]
-    branches: [ "main" ]
 
 permissions:
   contents: read
@@ -34,22 +33,40 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
+    outputs:
+      projectlist: ${{ steps.step5.outputs.projectlist }}
+      projectexist: ${{ steps.step6.outputs.projectexist }}
+
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # This step checks out a copy of your repository.
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      # This step creates the Checkmarx One scan
-      - name: Checkmarx One scan
-        uses: checkmarx/ast-github-action@8e887bb93dacc44e0f5b64ee2b06d5815f89d4fc
-        with:
-          base_uri: https://ast.checkmarx.net  # This should be replaced by your base uri for Checkmarx One
-          cx_client_id: ${{ secrets.CX_CLIENT_ID }} # This should be created within your Checkmarx One account : https://checkmarx.com/resource/documents/en/34965-118315-authentication-for-checkmarx-one-cli.html#UUID-a4e31a96-1f36-6293-e95a-97b4b9189060_UUID-4123a2ff-32d0-2287-8dd2-3c36947f675e
-          cx_client_secret: ${{ secrets.CX_CLIENT_SECRET }} # This should be created within your Checkmarx One account : https://checkmarx.com/resource/documents/en/34965-118315-authentication-for-checkmarx-one-cli.html#UUID-a4e31a96-1f36-6293-e95a-97b4b9189060_UUID-4123a2ff-32d0-2287-8dd2-3c36947f675e
-          cx_tenant: ${{ secrets.CX_TENANT }} # This should be replaced by your tenant for Checkmarx One
-          additional_params: --project-groups AdoreMe_Group --sast-filter !vendor/** --sast-preset-name "ASA Premium" --report-format sarif --output-path .
+      - name: Test echo
+        run: echo Hello ${{ github.repository }}!!
+      - name: Checkout Repo
+        uses: actions/checkout@v5
+      - name: Download Archive file
+        run: wget https://github.com/Checkmarx/ast-cli/releases/download/2.3.38/ast-cli_2.3.38_linux_x64.tar.gz
+      - name: Unarchive file
+        run: tar -xzvf ast-cli_2.3.38_linux_x64.tar.gz
+      - name: Check version
+        run: ./cx version
+      - id: step4
+        name: Check for project
+        run: echo $(./cx project list  --tenant "${{ secrets.CX_TENANT }}" --base-uri  "https://ast.checkmarx.net" --base-auth-uri "https://iam.checkmarx.net" --client-id  "${{ secrets.CX_CLIENT_ID }}" --client-secret "${{ secrets.CX_CLIENT_SECRET }}" --format json | grep ${{ github.repository }}) > temp.txt
+      - id: step5
+        name: View file
+        run: echo projectlist=$(stat -c %s ./temp.txt) >> "$GITHUB_OUTPUT"
+      - id: step6
+        name: View variable
+        run: echo projectexist=$(expr ${{ steps.step5.outputs.projectlist }} - 1 ) >> "$GITHUB_OUTPUT"
+      - name: Create the Project if it does not exist
+        if: ${{ steps.step6.outputs.projectexist == 0 }}
+        run: ./cx project create --tenant "${{ secrets.CX_TENANT }}" --base-uri  "https://ast.checkmarx.net" --base-auth-uri "https://iam.checkmarx.net" --client-id  "${{ secrets.CX_CLIENT_ID }}" --client-secret "${{ secrets.CX_CLIENT_SECRET }}" --tags "AdoreMe_Github_scan,adoreme" --project-name ${{ github.repository }}
+      - name: Run SAST Scan
+        run: ./cx scan create -s .  --tenant "${{ secrets.CX_TENANT }}" --base-uri  "https://ast.checkmarx.net" --base-auth-uri "https://iam.checkmarx.net" --client-id  "${{ secrets.CX_CLIENT_ID }}" --client-secret "${{ secrets.CX_CLIENT_SECRET }}" --tags "AdoreMe_Github_scan,adoreme" --output-path . --project-groups "AdoreMe_Group" --project-name ${{ github.repository }} --branch ${{ github.ref_name }} --report-format sarif --sast-preset-name "ASA Premium" --threshold 'kics-high=1;kics-critical=1;sast-high=1;sast-critical=1;sca-high=1;sca-critical=1'
+      - name: View Results
+        run: cat ./cx_result.sarif
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v3
         with:
-          # Path to SARIF file relative to the root of the repository
-          sarif_file: cx_result.sarif
+          sarif_file: ./cx_result.sarif # Replace with the actual path to your SARIF file
