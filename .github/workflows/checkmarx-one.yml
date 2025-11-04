@@ -63,7 +63,7 @@ jobs:
         if: ${{ steps.step6.outputs.projectexist == 0 }}
         run: ./cx project create --tenant "${{ secrets.CX_TENANT }}" --base-uri  "https://ast.checkmarx.net" --base-auth-uri "https://iam.checkmarx.net" --client-id  "${{ secrets.CX_CLIENT_ID }}" --client-secret "${{ secrets.CX_CLIENT_SECRET }}" --tags "AdoreMe_Github_scan,adoreme" --project-name ${{ github.repository }}
       - name: Run SAST Scan
-        run: |
+        run: -|
           ./cx scan create -s .  --tenant "${{ secrets.CX_TENANT }}" \
             --base-uri  "https://ast.checkmarx.net" --base-auth-uri "https://iam.checkmarx.net" \
             --client-id  "${{ secrets.CX_CLIENT_ID }}" --client-secret "${{ secrets.CX_CLIENT_SECRET }}" \
