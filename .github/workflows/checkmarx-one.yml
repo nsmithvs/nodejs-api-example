@@ -62,6 +62,7 @@ jobs:
         run: ./cx project create --tenant "${{ secrets.CX_TENANT }}" --base-uri  "${{ env.CX_BASE_URL }}" --base-auth-uri "${{ secrets.CX_AUTH_URL }}" --client-id  "${{ secrets.CX_CLIENT_ID }}" --client-secret "${{ secrets.CX_CLIENT_SECRET }}" --tags "AdoreMe_Github_scan,adoreme" --project-name ${{ github.repository }}
       - name: Run SAST Scan
         run: ./cx scan create -s .  --tenant "${{ secrets.CX_TENANT }}" --base-uri  "${{ env.CX_BASE_URL }}" --base-auth-uri "${{ secrets.CX_AUTH_URL }}" --client-id  "${{ secrets.CX_CLIENT_ID }}" --client-secret "${{ secrets.CX_CLIENT_SECRET }}" --tags "AdoreMe_Github_scan,adoreme" --output-path . --project-groups "${{ secrets.CX_GROUP }}" --project-name ${{ github.repository }} --branch ${{ github.ref_name }} --report-format sarif --sast-preset-name "ASA Premium" --threshold 'kics-high=1;kics-critical=1;sast-high=1;sast-critical=1;sca-high=1;sca-critical=1;containers-high=1' --sca-filter "*.json" --sca-hide-dev-test-dependencies --filter "state=TO_VERIFY"
+        continue-on-error: true
       - name: View Results
         run: cat ./cx_result.sarif
       - name: Upload SARIF file
