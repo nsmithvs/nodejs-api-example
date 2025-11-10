@@ -40,8 +40,6 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # This step checks out a copy of your repository.
-      - name: Test echo
-        run: echo Hello ${{ github.repository }}!!
       - name: Checkout Repo
         uses: actions/checkout@v5
       - name: Download Archive file
