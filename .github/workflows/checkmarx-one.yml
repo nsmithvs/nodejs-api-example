@@ -54,6 +54,8 @@ jobs:
       - id: step5
         name: View file
         run: echo projectlist=$(stat -c %s ./temp.txt) >> "$GITHUB_OUTPUT"
+      - id: step5a
+        run: cat ./temp.txt
       - id: step6
         name: View variable
         run: echo projectexist=$(expr ${{ steps.step5.outputs.projectlist }} - 1 ) >> "$GITHUB_OUTPUT"
