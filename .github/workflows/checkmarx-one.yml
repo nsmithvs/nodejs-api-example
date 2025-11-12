@@ -48,6 +48,8 @@ jobs:
         run: tar -xzvf ast-cli_2.3.38_linux_x64.tar.gz
       - name: Get Version
         run: ./cx version
+      - name: step1
+        run: ./cx project list --debug  --tenant "${{ secrets.CX_TENANT }}" --base-uri  "https://ast.checkmarx.net" --base-auth-uri "${{ secrets.CX_AUTH_URL }}" --client-id  "${{ secrets.CX_CLIENT_ID }}" --client-secret "${{ secrets.CX_CLIENT_SECRET }}" --format json
       - id: step4
         name: Check for project
         run: echo $(./cx project list  --tenant "${{ secrets.CX_TENANT }}" --base-uri  "https://ast.checkmarx.net" --base-auth-uri "${{ secrets.CX_AUTH_URL }}" --client-id  "${{ secrets.CX_CLIENT_ID }}" --client-secret "${{ secrets.CX_CLIENT_SECRET }}" --format json | grep ${{ github.repository }}) > temp.txt
