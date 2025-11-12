@@ -48,10 +48,10 @@ jobs:
         run: tar -xzvf ast-cli_2.3.38_linux_x64.tar.gz
       - id: step4a
         name: Check for project
-        run: ./cx project list --verbose  --tenant "${{ secrets.CX_TENANT }}" --base-uri  "${{ env.CX_BASE_URL }}" --base-auth-uri "${{ secrets.CX_AUTH_URL }}" --client-id  "${{ secrets.CX_CLIENT_ID }}" --client-secret "${{ secrets.CX_CLIENT_SECRET }}" --format json | grep ${{ github.repository }}
+        run: ./cx project list --verbose  --tenant "${{ secrets.CX_TENANT }}" --base-uri  "https://ast.checkmarx.net" --base-auth-uri "${{ secrets.CX_AUTH_URL }}" --client-id  "${{ secrets.CX_CLIENT_ID }}" --client-secret "${{ secrets.CX_CLIENT_SECRET }}" --format json | grep ${{ github.repository }}
       - id: step4
         name: Check for project
-        run: echo $(./cx project list  --tenant "${{ secrets.CX_TENANT }}" --base-uri  "${{ env.CX_BASE_URL }}" --base-auth-uri "${{ secrets.CX_AUTH_URL }}" --client-id  "${{ secrets.CX_CLIENT_ID }}" --client-secret "${{ secrets.CX_CLIENT_SECRET }}" --format json | grep ${{ github.repository }}) > temp.txt
+        run: echo $(./cx project list  --tenant "${{ secrets.CX_TENANT }}" --base-uri  "https://ast.checkmarx.net" --base-auth-uri "${{ secrets.CX_AUTH_URL }}" --client-id  "${{ secrets.CX_CLIENT_ID }}" --client-secret "${{ secrets.CX_CLIENT_SECRET }}" --format json | grep ${{ github.repository }}) > temp.txt
       - id: step5
         name: View file
         run: echo projectlist=$(stat -c %s ./temp.txt) >> "$GITHUB_OUTPUT"
@@ -60,9 +60,9 @@ jobs:
         run: echo projectexist=$(expr ${{ steps.step5.outputs.projectlist }} - 1 ) >> "$GITHUB_OUTPUT"
       - name: Create the Project if it does not exist
         if: ${{ steps.step6.outputs.projectexist == 0 }}
-        run: ./cx project create --tenant "${{ secrets.CX_TENANT }}" --base-uri  "${{ env.CX_BASE_URL }}" --base-auth-uri "${{ secrets.CX_AUTH_URL }}" --client-id  "${{ secrets.CX_CLIENT_ID }}" --client-secret "${{ secrets.CX_CLIENT_SECRET }}" --tags "AdoreMe_Github_scan,adoreme" --project-name ${{ github.repository }}
+        run: ./cx project create --tenant "${{ secrets.CX_TENANT }}" --base-uri  "https://ast.checkmarx.net" --base-auth-uri "${{ secrets.CX_AUTH_URL }}" --client-id  "${{ secrets.CX_CLIENT_ID }}" --client-secret "${{ secrets.CX_CLIENT_SECRET }}" --tags "AdoreMe_Github_scan,adoreme" --project-name ${{ github.repository }}
       - name: Run SAST Scan
-        run: ./cx scan create -s .  --tenant "${{ secrets.CX_TENANT }}" --base-uri  "${{ env.CX_BASE_URL }}" --base-auth-uri "${{ secrets.CX_AUTH_URL }}" --client-id  "${{ secrets.CX_CLIENT_ID }}" --client-secret "${{ secrets.CX_CLIENT_SECRET }}" --tags "AdoreMe_Github_scan,adoreme" --output-path . --project-groups "${{ secrets.CX_GROUP }}" --project-name ${{ github.repository }} --branch ${{ github.ref_name }} --report-format sarif --sast-preset-name "ASA Premium" --threshold 'kics-high=1;kics-critical=1;sast-high=1;sast-critical=1;sca-high=1;sca-critical=1;containers-high=1' --sca-filter "*.json" --sca-hide-dev-test-dependencies --filter "state=TO_VERIFY"
+        run: ./cx scan create -s .  --tenant "${{ secrets.CX_TENANT }}" --base-uri  "https://ast.checkmarx.net" --base-auth-uri "${{ secrets.CX_AUTH_URL }}" --client-id  "${{ secrets.CX_CLIENT_ID }}" --client-secret "${{ secrets.CX_CLIENT_SECRET }}" --tags "AdoreMe_Github_scan,adoreme" --output-path . --project-groups "${{ secrets.CX_GROUP }}" --project-name ${{ github.repository }} --branch ${{ github.ref_name }} --report-format sarif --sast-preset-name "ASA Premium" --threshold 'kics-high=1;kics-critical=1;sast-high=1;sast-critical=1;sca-high=1;sca-critical=1;containers-high=1' --sca-filter "*.json" --sca-hide-dev-test-dependencies --filter "state=TO_VERIFY"
       - name: Upload SARIF file
         if: failure()
         uses: github/codeql-action/upload-sarif@v3
