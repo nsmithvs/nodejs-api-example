@@ -46,6 +46,9 @@ jobs:
         run: wget https://github.com/Checkmarx/ast-cli/releases/download/2.3.38/ast-cli_2.3.38_linux_x64.tar.gz
       - name: Unarchive file
         run: tar -xzvf ast-cli_2.3.38_linux_x64.tar.gz
+      - id: step4a
+        name: Check for project
+        run: ./cx project list  --tenant "${{ secrets.CX_TENANT }}" --base-uri  "${{ env.CX_BASE_URL }}" --base-auth-uri "${{ secrets.CX_AUTH_URL }}" --client-id  "${{ secrets.CX_CLIENT_ID }}" --client-secret "${{ secrets.CX_CLIENT_SECRET }}" --format json | grep ${{ github.repository }}
       - id: step4
         name: Check for project
         run: echo $(./cx project list  --tenant "${{ secrets.CX_TENANT }}" --base-uri  "${{ env.CX_BASE_URL }}" --base-auth-uri "${{ secrets.CX_AUTH_URL }}" --client-id  "${{ secrets.CX_CLIENT_ID }}" --client-secret "${{ secrets.CX_CLIENT_SECRET }}" --format json | grep ${{ github.repository }}) > temp.txt
