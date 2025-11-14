@@ -59,6 +59,9 @@ jobs:
       - id: step6
         name: View variable
         run: echo projectexist=$(expr ${{ steps.step5.outputs.projectlist }} - 1 ) >> "$GITHUB_OUTPUT"
+      - name: Create the Project if it does not exist
+        if: ${{ steps.step6.outputs.projectexist == 0 }}
+        run: ./cx project create --tenant "${{ secrets.CX_TENANT }}" --base-uri  "https://ast.checkmarx.net" --base-auth-uri "https://iam.checkmarx.net" --client-id  "${{ secrets.CX_CLIENT_ID }}" --client-secret "${{ secrets.CX_CLIENT_SECRET }}" --tags "AdoreMe_Github_scan,adoreme" --project-name ${{ github.repository }}
       - name: Run SAST Scan
         run: ./cx scan create -s .  --tenant "${{ secrets.CX_TENANT }}" --base-uri  "https://ast.checkmarx.net" --base-auth-uri "${{ secrets.CX_AUTH_URL }}" --client-id  "${{ secrets.CX_CLIENT_ID }}" --client-secret "${{ secrets.CX_CLIENT_SECRET }}" --tags "AdoreMe_Github_scan,adoreme" --output-path . --project-groups "${{ secrets.CX_GROUP }}" --project-name ${{ github.repository }} --branch ${{ github.ref_name }} --report-format sarif --sast-preset-name "ASA Premium" --threshold 'kics-high=1;kics-critical=1;sast-high=1;sast-critical=1;sca-high=1;sca-critical=1;containers-high=1' --sca-filter "*.json" --sca-hide-dev-test-dependencies --filter "state=TO_VERIFY"
       - name: Upload SARIF file
